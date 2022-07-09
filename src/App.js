@@ -9,13 +9,7 @@ function App() {
       .string()
       .required('Le champ est obligatoire')
       .min(2, 'Trop court')
-      .max(5, 'Trop long')
-      .test('isYes', "Vous n'avez pas de chance", async () => {
-        const response = await fetch('https://yesno.wtf/api');
-        const result = await response.json();
-        console.log(result);
-        return result.answer === 'yes';
-      }),
+      .max(5, 'Trop long'),
     age: yup
       .number()
       .typeError('Veuillez entre un nombre')
@@ -55,6 +49,7 @@ function App() {
       gender: null,
       password: '',
       confim: '',
+      activities: [],
     },
     criteriaMode: 'all',
     resolver: yupResolver(schema),
@@ -87,7 +82,7 @@ function App() {
         },
       });
       if (response.ok) {
-        throw new Error('Test erreur globale'); // A commenter pour fonctionnement normal
+        // throw new Error('Test erreur globale'); // A commenter pour fonctionnement normal
         const newUser = await response.json();
         reset();
         console.log(newUser);
