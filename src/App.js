@@ -1,6 +1,6 @@
 import React from 'react';
 import * as yup from 'yup';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 function App() {
@@ -35,6 +35,7 @@ function App() {
   });
 
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors, isSubmitting, submitCount },
@@ -58,6 +59,22 @@ function App() {
     criteriaMode: 'all',
     resolver: yupResolver(schema),
   });
+
+  const { fields, append, remove } = useFieldArray({
+    name: 'activities',
+    control,
+  });
+
+  function addActivity() {
+    append({
+      value: '',
+      level: 'expert',
+    });
+  }
+
+  function deleteActivity(index) {
+    remove(index);
+  }
 
   async function submit(values) {
     try {
@@ -190,6 +207,43 @@ function App() {
           {errors?.confirmPassword && (
             <p style={{ color: 'red' }}>{errors.confirmPassword.message}</p>
           )}
+        </div>
+        <div className="d-flex flex-column mb-20">
+          <label className="mb-5 d-flex flex-row justify-content-center align-items-center">
+            <span className="flex-fill">Activités</span>
+            <button
+              onClick={addActivity}
+              type="button"
+              className="btn btn-reverse-primary"
+            >
+              +
+            </button>
+          </label>
+          <ul>
+            {fields.map((activity, i) => (
+              <li key={activity.id} className="d-flex flex-row">
+                <input
+                  {...register(`activities[${i}].value`)}
+                  className="flex-fill mr-5"
+                  type="text"
+                />
+                <select {...register(`activities[${i}].level`)}>
+                  <option value="beginner">Débutant</option>
+                  <option value="expert">Expert</option>
+                </select>
+                <button
+                  type="button"
+                  onClick={() => deleteActivity(i)}
+                  className="btn btn-priamry"
+                >
+                  -
+                </button>
+                {errors.activities?.length && errors.activities[i]?.level && (
+                  <p>{errors.activities[i].level.message}</p>
+                )}
+              </li>
+            ))}
+          </ul>
         </div>
         {errors?.globalError && (
           <p style={{ color: 'red' }}>{errors.globalError.message}</p>
