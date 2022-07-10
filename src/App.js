@@ -241,7 +241,9 @@ function App() {
                   -
                 </button>
                 {errors.activities?.length && errors.activities[i]?.level && (
-                  <p>{errors.activities[i].level.message}</p>
+                  <p style={{ color: 'red' }}>
+                    {errors.activities[i].level.message}
+                  </p>
                 )}
               </li>
             ))}
