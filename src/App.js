@@ -26,6 +26,13 @@ function App() {
         [yup.ref('password'), ''],
         'Les mots de passe ne correspondent pas'
       ),
+    activities: yup.array().of(
+      yup.object({
+        level: yup
+          .string()
+          .equals(['expert'], 'Vous ne pouvez pas être débutant'),
+      })
+    ),
   });
 
   const {
